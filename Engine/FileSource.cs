@@ -1,31 +1,30 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Windows.Forms;
 
 namespace XCoder
 {
     /// <summary>文件资源</summary>
     public static class Source
     {
-        public static Icon GetIcon()
-        {
-            try
-            {
-                return new Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream(typeof(Source), "leaf.ico"));
-            }
-            catch { return null; }
-        }
+        //public static Icon GetIcon()
+        //{
+        //    try
+        //    {
+        //        return new Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream(typeof(Source), "leaf.ico"));
+        //    }
+        //    catch { return null; }
+        //}
 
         public static String GetText(String name)
         {
             if (Path.GetExtension(name).IsNullOrWhiteSpace()) name += ".txt";
-            var ms = Assembly.GetExecutingAssembly().GetManifestResourceStream(typeof(Source), name);
-            return ms.ToStr();
+            return "";
+            //var ms = Assembly.GetExecutingAssembly().GetManifestResourceStream(typeof(Source), name);
+            //return ms.ToStr();
         }
 
         public static void ReleaseAllTemplateFiles()
@@ -101,7 +100,7 @@ namespace XCoder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                //MessageBox.Show(ex.ToString());
             }
         }
     }

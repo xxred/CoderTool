@@ -31,19 +31,43 @@ namespace Web码神工具.Controllers
         [HttpGet("[action]")]
         public string[] GetDatabaseList()
         {
-            //return Json(new[] {"665556"});
-            return new[] { "665556" };
+            var list = DAL.ConnStrs.Keys.ToArray();
+            return list;
         }
+
+        [HttpGet("[action]")]
+        public IEnumerable<string> Connect(string connName)
+        {
+            var list = DAL.Create(connName).Tables;
+            var tabList = _dataModel.SortTables(list).Select(s=>s.ToString());
+            return tabList;
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<string> GetTemplateList()
+        {
+            return _dataModel.GetTemplateList();
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<string> GenTable(ModelConfig cfg)
+        {
+            _dataModel._Engine.Config = cfg;
+            var tabName = Request.Query["tabName"];
+            _dataModel._Engine.Render(tabName);
+            return _dataModel.GetTemplateList();
+        }
+
     }
 
     public class DataModel
     {
 
         #region 属性
-        /// <summary>配置</summary>
+        ///// <summary>配置</summary>
         public static ModelConfig Config { get { return ModelConfig.Current; } }
 
-        private Engine _Engine;
+        public Engine _Engine;
         /// <summary>生成器</summary>
         Engine Engine
         {
@@ -56,6 +80,7 @@ namespace Web码神工具.Controllers
         public DataModel()
         {
             AutoLoadTables(Config.ConnName);
+            AutoDetectDatabase();
         }
 
         private void FrmMain_Shown(Object sender, EventArgs e)
@@ -143,22 +168,22 @@ namespace Web码神工具.Controllers
         //    if (String.IsNullOrEmpty(txt_NameSpace.Text)) txt_NameSpace.Text = cbConn.Text;
         //}
 
-        //void AutoDetectDatabase()
-        //{
-        //    // 加上本机MSSQL
-        //    var localName = "local_MSSQL";
-        //    var localstr = "Data Source=.;Initial Catalog=master;Integrated Security=True;";
-        //    if (!ContainConnStr(localstr)) DAL.AddConnStr(localName, localstr, null, "mssql");
+        void AutoDetectDatabase()
+        {
+            // 加上本机MSSQL
+            var localName = "local_MSSQL";
+            var localstr = "Data Source=.;Initial Catalog=master;Integrated Security=True;";
+            if (!ContainConnStr(localstr)) DAL.AddConnStr(localName, localstr, null, "mssql");
 
-        //    // 检测本地Access和SQLite
-        //    Task.Factory.StartNew(DetectFile, TaskCreationOptions.LongRunning).LogException();
+            // 检测本地Access和SQLite
+            //Task.Factory.StartNew(DetectFile, TaskCreationOptions.LongRunning).LogException();
 
-        //    //!!! 必须另外实例化一个列表，否则作为数据源绑定时，会因为是同一个对象而被跳过
-        //    //var list = new List<String>();
+            //!!! 必须另外实例化一个列表，否则作为数据源绑定时，会因为是同一个对象而被跳过
+            //var list = new List<String>();
 
-        //    // 探测连接中的其它库
-        //    Task.Factory.StartNew(DetectRemote, TaskCreationOptions.LongRunning).LogException();
-        //}
+            // 探测连接中的其它库
+            //Task.Factory.StartNew(DetectRemote, TaskCreationOptions.LongRunning).LogException();
+        }
 
         //void DetectFile()
         //{
@@ -345,14 +370,14 @@ namespace Web码神工具.Controllers
         //    //if (list.Contains(localName)) list.Remove(localName);
         //}
 
-        //Boolean ContainConnStr(String connstr)
-        //{
-        //    foreach (var item in DAL.ConnStrs)
-        //    {
-        //        if (connstr.EqualIgnoreCase(item.Value)) return true;
-        //    }
-        //    return false;
-        //}
+        Boolean ContainConnStr(String connstr)
+        {
+            foreach (var item in DAL.ConnStrs)
+            {
+                if (connstr.EqualIgnoreCase(item.Value)) return true;
+            }
+            return false;
+        }
 
         //void SetDatabaseList(List<String> list)
         //{
@@ -396,51 +421,36 @@ namespace Web码神工具.Controllers
         //    });
         //}
 
-        //void SetTables(Object source)
-        //{
-        //    if (source == null)
-        //    {
-        //        cbTableList.DataSource = source;
-        //        cbTableList.Items.Clear();
-        //        return;
-        //    }
-        //    var list = source as List<IDataTable>;
-        //    if (list != null && list.Count > 0 && list[0].DbType == DatabaseType.SqlServer) // 增加对SqlServer 2000的特殊处理  ahuang
-        //    {
-        //        //list.Remove(list.Find(delegate(IDataTable p) { return p.Name == "dtproperties"; }));
-        //        //list.Remove(list.Find(delegate(IDataTable p) { return p.Name == "sysconstraints"; }));
-        //        //list.Remove(list.Find(delegate(IDataTable p) { return p.Name == "syssegments"; }));
-        //        //list.RemoveAll(delegate(IDataTable p) { return p.Description.Contains("[0E232FF0-B466-"); });
-        //        list.RemoveAll(dt => dt.Name == "dtproperties" || dt.Name == "sysconstraints" || dt.Name == "syssegments" || dt.Description.Contains("[0E232FF0-B466-"));
-        //    }
+        public List<IDataTable> SortTables(List<IDataTable> source)
+        {
+            if (source == null)
+            {
+                return new List<IDataTable>();
+            }
+            var list = source;
+            if (list.Count > 0 && list[0].DbType == DatabaseType.SqlServer) // 增加对SqlServer 2000的特殊处理  ahuang
+            {
+                //list.Remove(list.Find(delegate(IDataTable p) { return p.Name == "dtproperties"; }));
+                //list.Remove(list.Find(delegate(IDataTable p) { return p.Name == "sysconstraints"; }));
+                //list.Remove(list.Find(delegate(IDataTable p) { return p.Name == "syssegments"; }));
+                //list.RemoveAll(delegate(IDataTable p) { return p.Description.Contains("[0E232FF0-B466-"); });
+                list.RemoveAll(dt => dt.Name == "dtproperties" || dt.Name == "sysconstraints" || dt.Name == "syssegments" || dt.Description.Contains("[0E232FF0-B466-"));
+            }
 
-        //    // 设置前最好清空，否则多次设置数据源会用第一次绑定控件，然后实际数据是最后一次
-        //    //cbTableList.DataSource = source;
-        //    cbTableList.Items.Clear();
-        //    if (source != null)
-        //    {
-        //        // 表名排序
-        //        var tables = source as List<IDataTable>;
-        //        if (tables == null)
-        //            cbTableList.DataSource = source;
-        //        else
-        //        {
-        //            tables.Sort((t1, t2) => t1.Name.CompareTo(t2.Name));
-        //            cbTableList.DataSource = tables;
-        //        }
-        //        ////cbTableList.DisplayMember = "Name";
-        //        //cbTableList.ValueMember = "Name";
-        //    }
-        //    cbTableList.Update();
-        //}
+
+            // 表名排序
+            var tables = source;
+            tables.Sort((t1, t2) => t1.Name.CompareTo(t2.Name));
+            return tables;
+        }
 
         void AutoLoadTables(String name)
         {
-           if (String.IsNullOrEmpty(name)) return;
-           if (!DAL.ConnStrs.TryGetValue(name, out var connstr) || connstr.IsNullOrWhiteSpace()) return;
+            if (String.IsNullOrEmpty(name)) return;
+            if (!DAL.ConnStrs.TryGetValue(name, out var connstr) || connstr.IsNullOrWhiteSpace()) return;
 
-           // 异步加载
-           Task.Factory.StartNew(() => { var tables = DAL.Create(name).Tables; }).LogException();
+            // 异步加载
+            Task.Factory.StartNew(() => { var tables = DAL.Create(name).Tables; }).LogException();
         }
 
         //private void btnRefreshTable_Click(Object sender, EventArgs e)
@@ -583,26 +593,15 @@ namespace Web码神工具.Controllers
         //#endregion
 
         //#region 模版相关
-        //public void BindTemplate(ComboBox cb)
-        //{
-        //    var list = new List<String>();
-        //    foreach (var item in Engine.FileTemplates)
-        //    {
-        //        list.Add("[文件]" + item);
-        //    }
-        //    foreach (var item in Engine.Templates.Keys)
-        //    {
-        //        var ks = item.Split('.');
-        //        if (ks == null || ks.Length < 1) continue;
-
-        //        var name = "[内置]" + ks[0];
-        //        if (!list.Contains(name)) list.Add(name);
-        //    }
-        //    cb.Items.Clear();
-        //    cb.DataSource = list;
-        //    //cb.DisplayMember = "value";
-        //    cb.Update();
-        //}
+        public List<String> GetTemplateList()
+        {
+            var list = new List<String>();
+            foreach (var item in Engine.FileTemplates)
+            {
+                list.Add("[文件]" + item);
+            }
+            return list;
+        }
 
         //private void btnRelease_Click(Object sender, EventArgs e)
         //{

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +8,7 @@ using NewLife;
 using NewLife.Model;
 using NewLife.Reflection;
 using XCode.DataAccessLayer;
-using XTemplate.Templating;
+//using XTemplate.Templating;
 
 namespace XCoder
 {
@@ -20,7 +20,7 @@ namespace XCoder
 
         private static Dictionary<String, String> _Templates;
         /// <summary>模版</summary>
-        public static Dictionary<String, String> Templates { get { return _Templates ?? (_Templates = Source.GetTemplates()); } }
+        //public static Dictionary<String, String> Templates { get { return _Templates /*?? (_Templates = Source.GetTemplates())*/; } }
 
         private static List<String> _FileTemplates;
         /// <summary>文件模版</summary>
@@ -33,6 +33,7 @@ namespace XCoder
                     var list = new List<String>();
 
                     var dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, TemplatePath);
+                    if (Directory.Exists(dir)) dir = Directory.GetCurrentDirectory().EnsureEnd("/") + TemplatePath;
                     if (Directory.Exists(dir))
                     {
                         var ds = Directory.GetDirectories(dir);
@@ -92,7 +93,7 @@ namespace XCoder
         #region 构造
         static Engine()
         {
-            Template.BaseClassName = typeof(XCoderBase).FullName;
+            //Template.BaseClassName = typeof(XCoderBase).FullName;
         }
         #endregion
 
@@ -160,7 +161,7 @@ namespace XCoder
             #region 模版预处理
             // 声明模版引擎
             //Template tt = new Template();
-            Template.Debug = Config.Debug;
+            //Template.Debug = Config.Debug;
             var templates = new Dictionary<String, String>();
             // 每一个模版的编码，用于作为输出文件的编码
             var encs = new List<Encoding>();
@@ -173,26 +174,26 @@ namespace XCoder
                 tempKind = tempName.Substring(0, p + 1);
                 tempName = tempName.Substring(p + 1);
             }
-            if (tempKind == "[内置]")
-            {
-                // 系统模版
-                foreach (var item in Templates)
-                {
-                    var key = item.Key;
-                    var name = key.Substring(0, key.IndexOf("."));
-                    if (name != tempName) continue;
+            //if (tempKind == "[内置]")
+            //{
+            //    // 系统模版
+            //    foreach (var item in Templates)
+            //    {
+            //        var key = item.Key;
+            //        var name = key.Substring(0, key.IndexOf("."));
+            //        if (name != tempName) continue;
 
-                    var content = item.Value;
+            //        var content = item.Value;
 
-                    // 添加文件头
-                    if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) && key.EndsWithIgnoreCase(".cs"))
-                        content = Config.HeadTemplate + content;
+            //        // 添加文件头
+            //        if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) && key.EndsWithIgnoreCase(".cs"))
+            //            content = Config.HeadTemplate + content;
 
-                    templates.Add(key.Substring(name.Length + 1), content);
-                    encs.Add(Encoding.UTF8);
-                }
-            }
-            else
+            //        templates.Add(key.Substring(name.Length + 1), content);
+            //        encs.Add(Encoding.UTF8);
+            //    }
+            //}
+            //else
             {
                 // 文件模版
                 //var dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, TemplatePath);
@@ -223,9 +224,9 @@ namespace XCoder
             }
             if (templates.Count < 1) throw new Exception("没有可用模版！");
 
-            var tt = Template.Create(templates);
+            //var tt = Template.Create(templates);
             if (tempName.StartsWith("*")) tempName = tempName.Substring(1);
-            tt.AssemblyName = tempName;
+            //tt.AssemblyName = tempName;
             #endregion
 
             #region 输出目录预处理
@@ -247,42 +248,42 @@ namespace XCoder
 
             #region 编译生成
             // 编译模版。这里至少要处理，只有经过了处理，才知道模版项是不是被包含的
-            tt.Compile();
+            //tt.Compile();
 
             var rs = new List<String>();
             var i = -1;
-            foreach (var item in tt.Templates)
-            {
-                i++;
-                if (item.Included) continue;
+            //foreach (var item in tt.Templates)
+            //{
+            //    i++;
+            //    if (item.Included) continue;
 
-                // 计算输出文件名
-                var fileName = Path.GetFileName(item.Name);
-                var fname = Config.UseCNFileName ? table.DisplayName : table.Name;
-                fname = fname.Replace("/", "_").Replace("\\", "_").Replace("?", null);
-                // 如果中文名无效，采用英文名
-                if (String.IsNullOrEmpty(Path.GetFileNameWithoutExtension(fname)) || fname[0] == '.') fname = table.Name;
-                fileName = fileName.Replace("类名", fname).Replace("中文名", fname).Replace("连接名", Config.EntityConnName);
+            //    // 计算输出文件名
+            //    var fileName = Path.GetFileName(item.Name);
+            //    var fname = Config.UseCNFileName ? table.DisplayName : table.Name;
+            //    fname = fname.Replace("/", "_").Replace("\\", "_").Replace("?", null);
+            //    // 如果中文名无效，采用英文名
+            //    if (String.IsNullOrEmpty(Path.GetFileNameWithoutExtension(fname)) || fname[0] == '.') fname = table.Name;
+            //    fileName = fileName.Replace("类名", fname).Replace("中文名", fname).Replace("连接名", Config.EntityConnName);
 
-                fileName = Path.Combine(outpath, fileName);
+            //    fileName = Path.Combine(outpath, fileName);
 
-                // 如果不覆盖，并且目标文件已存在，则跳过
-                if (!Config.Override && File.Exists(fileName)) continue;
+            //    // 如果不覆盖，并且目标文件已存在，则跳过
+            //    if (!Config.Override && File.Exists(fileName)) continue;
 
-                var content = tt.Render(item.Name, data);
+            //    var content = tt.Render(item.Name, data);
 
-                var dir = Path.GetDirectoryName(fileName);
-                if (!String.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                //File.WriteAllText(fileName, content, Encoding.UTF8);
-                // 将文件保存为utf-8无bom格式
-                //File.WriteAllText(fileName, content, new UTF8Encoding(false));
+            //    var dir = Path.GetDirectoryName(fileName);
+            //    if (!String.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            //    //File.WriteAllText(fileName, content, Encoding.UTF8);
+            //    // 将文件保存为utf-8无bom格式
+            //    //File.WriteAllText(fileName, content, new UTF8Encoding(false));
 
-                // aspx页面如果不是UTF8编码，很有可能出现页面中文乱码，CMX生成的页面文件出现该情况
-                // 使用模版文件本身的文件编码来作为输出文件的编码，默认UTF8
-                File.WriteAllText(fileName, content, encs[i]);
+            //    // aspx页面如果不是UTF8编码，很有可能出现页面中文乱码，CMX生成的页面文件出现该情况
+            //    // 使用模版文件本身的文件编码来作为输出文件的编码，默认UTF8
+            //    File.WriteAllText(fileName, content, encs[i]);
 
-                rs.Add(content);
-            }
+            //    rs.Add(content);
+            //}
             return rs.ToArray();
             #endregion
         }

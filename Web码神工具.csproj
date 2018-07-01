@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="MySql.Data" Version="8.0.11" />
     <PackageReference Include="NewLife.Core" Version="7.3.6755.22250" />
     <PackageReference Include="NewLife.XCode" Version="9.8.6755.22252" />
   </ItemGroup>
@@ -13,9 +14,22 @@
   <ItemGroup>
     <!-- Files not to show in IDE -->
     <None Remove="yarn.lock" />
+    <Compile Remove="FolderInfo\**" />
+    <Compile Remove="Template\**" />
 
     <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
     <Content Remove="ClientApp\**" />
+    <Content Remove="FolderInfo\**" />
+    <Content Remove="Template\**" />
+    <EmbeddedResource Remove="FolderInfo\**" />
+    <EmbeddedResource Remove="Template\**" />
+    <None Remove="FolderInfo\**" />
+    <None Remove="Template\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Engine\IcoHelper.cs" />
+    <Compile Remove="Engine\UIConfig.cs" />
+    <Compile Remove="Engine\XCoderBase.cs" />
   </ItemGroup>
   <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
