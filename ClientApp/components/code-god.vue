@@ -62,10 +62,7 @@
             </Col>
             <Col span="12">
             <FormItem label="生成泛型实体类">
-                <CheckboxGroup v-model="formItem.renderGenEntity">
-                    <Checkbox label=""></Checkbox>
-                </CheckboxGroup>
-
+                <Checkbox v-model="formItem.renderGenEntity" ></Checkbox>
             </FormItem>
             </Col>
         </Row>
@@ -73,16 +70,13 @@
             <Col span="12">
             <FormItem label="输出目录">
                 <Input v-model="formItem.outputPath" placeholder=""></Input>
-
             </FormItem>
             </Col>
             <Col span="12">
             <FormItem label="中文文件名">
                 <Row>
                     <Col span="12">
-                    <CheckboxGroup v-model="formItem.UseCNFileName">
-                        <Checkbox label=""></Checkbox>
-                    </CheckboxGroup>
+                        <Checkbox v-model="formItem.useCNFileName"></Checkbox>
                     </Col>
                     <Col span="12">
                     <Button type="primary">打开目录</Button>
@@ -107,8 +101,10 @@
                     templateName: '',
                     nameSpace: 'Models',
                     entityConnName: 'Conn',
-                    baseClass:'Entity',
-                    outputPath: ""
+                    baseClass: 'Entity',
+                    renderGenEntity: true,
+                    useCNFileName:true,
+                    outputPath: "Output"
                 }
             };
         },
@@ -116,8 +112,8 @@
             async genTable() {
                 let vm = this;
                 try {
-                    let response = await this.$http.get('/api/DataModel/GenTable', { params: formItem })
-                    alert(response.data);
+                    let response = await this.$http.get('/api/DataModel/GenTable', { params: vm.formItem })
+                    vm.$Message.info(response.data);
                 } catch (error) {
                     console.log(error)
                 }

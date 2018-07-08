@@ -581,3 +581,4 @@ _Pvt_Extensions
 .fake/
 
 .vscode/
+/Output
