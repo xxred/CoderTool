@@ -95,13 +95,3 @@ Copyright (c) 2016-2017 [Mark Pieszak](https://github.com/MarkPieszak)
 Twitter: [@MarkPieszak](http://twitter.com/MarkPieszak) | Medium: [@MarkPieszak](https://medium.com/@MarkPieszak)
 
 ----
-
-# DevHelp.Online - VueJS & ASP.NET - Consulting | Training | Development
-
-Check out **[www.DevHelp.Online](http://DevHelp.Online)** for more info! Twitter [@DevHelpOnline](https://twitter.com/DevHelpOnline)
-
-Contact us at <hello@devhelp.online>, and let's talk about your projects needs.
-
-<p align="center">
-    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/768119/images/4272479/Screen_Shot_2017-10-27_at_6.58.34_PM.png" alt="DevHelp.Online - Angular ASPNET JavaScript Consulting Development and Training">
-</p>
