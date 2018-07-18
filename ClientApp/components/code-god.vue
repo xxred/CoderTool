@@ -22,8 +22,8 @@
                 </Col>
                 <Col span="14">
                 <Button type="primary" style="margin-left: 8px"  @click="genTable">生成该表</Button>
-                <Button type="primary">生成所有表</Button>
-                <Button type="primary">刷新数据表</Button>
+                <!--<Button type="primary">生成所有表</Button>
+                <Button type="primary">刷新数据表</Button>-->
                 </Col>
             </Row>
         </FormItem>
@@ -35,7 +35,7 @@
                 </Select>
                 </Col>
                 <Col span="14">
-                <Button type="primary" style="margin-left: 8px">释放内部模板</Button>
+                <Button type="primary" style="margin-left: 8px" @click="openDir('Template')">打开模板目录</Button>
                 </Col>
             </Row>
         </FormItem>
@@ -79,7 +79,7 @@
                         <Checkbox v-model="formItem.useCNFileName"></Checkbox>
                     </Col>
                     <Col span="12">
-                    <Button type="primary">打开目录</Button>
+                    <Button type="primary" @click="openDir(formItem.outputPath)">打开目录</Button>
                     </Col>
                 </Row>
 
@@ -109,6 +109,15 @@
             };
         },
         methods: {
+            async openDir(dir) {
+                let vm = this;
+                try {
+                    let response = await this.$http.get('/api/DataModel/openDir', { params: { dir: dir } })
+                    vm.$Message.info(response.data);
+                } catch (error) {
+                    console.log(error)
+                }
+            },
             async genTable() {
                 let vm = this;
                 try {

@@ -69,7 +69,7 @@ namespace Web码神工具.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<string> GenTable(ModelConfig cfg)
+        public string GenTable(ModelConfig cfg)
         {
             //_dataModel._Engine.Config = cfg;
             var tabName = Request.Query["tabName"];
@@ -148,7 +148,22 @@ namespace Web码神工具.Controllers
                 }
             }
 
-            return _dataModel.GetTemplateList();
+            return "生成成功!";
+        }
+
+        [HttpGet("[action]")]
+        public string OpenDir(string dir)
+        {
+            if (dir.IsNullOrWhiteSpace())
+            {
+                return "目录不能为空";
+            }
+
+            var dirInfo = Directory.CreateDirectory(dir);
+
+            Process.Start("explorer.exe", "\"" + dirInfo.FullName + "\"");
+
+            return "打开成功！";
         }
 
         public String GenTemplate(string relativePath, IDataTable table, ModelConfig cfg)
@@ -158,8 +173,8 @@ namespace Web码神工具.Controllers
             {
                 relativePath = "/Template/实体数据/中文名.cs.cshtml";
             }
-            var compiler = _viewCompilerProvider.GetCompiler();
-            var compileTask = compiler.CompileAsync(relativePath);
+            var compiler = _viewCompilerProvider.GetCompiler();// new Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler
+             var compileTask = compiler.CompileAsync(relativePath);
 
             var viewDescriptor = compileTask.GetAwaiter().GetResult();
 
