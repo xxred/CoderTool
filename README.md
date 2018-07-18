@@ -90,8 +90,4 @@ Many thanks go out to Steve Sanderson (@SteveSandersonMS) from Microsoft and his
 
 Copyright (c) 2016-2017 [Mark Pieszak](https://github.com/MarkPieszak)
 
-### Follow me online:
-
-Twitter: [@MarkPieszak](http://twitter.com/MarkPieszak) | Medium: [@MarkPieszak](https://medium.com/@MarkPieszak)
-
 ----
