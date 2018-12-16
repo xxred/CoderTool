@@ -17,25 +17,25 @@ namespace Web码神工具
         {
             var webHost = BuildWebHost(args);
 
-            var serverAddresses = webHost.ServerFeatures.Get<IServerAddressesFeature>()?.Addresses;
-            if (serverAddresses != null)
-            {
-                var url = serverAddresses.FirstOrDefault() ?? "";
-                if (Runtime.OSX)
-                {
-                    Process.Start("open", url);
-                }
-                else if(Runtime.Linux)
-                {
-                    Process.Start("xdg-open", url);
-                }
-                else
-                {
-                    //Process.Start($"cmd /c start {url}");
+            //var serverAddresses = webHost.ServerFeatures.Get<IServerAddressesFeature>()?.Addresses;
+            //if (serverAddresses != null)
+            //{
+            //    var url = serverAddresses.FirstOrDefault() ?? "";
+            //    if (Runtime.OSX)
+            //    {
+            //        Process.Start("open", url);
+            //    }
+            //    else if(Runtime.Linux)
+            //    {
+            //        Process.Start("xdg-open", url);
+            //    }
+            //    else
+            //    {
+            //        //Process.Start($"cmd /c start {url}");
 
-                    Process.Start(new ProcessStartInfo("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", $"{url}"));
-                }
-            }
+            //        Process.Start(new ProcessStartInfo("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", $"{url}"));
+            //    }
+            //}
 
             webHost.Run();
 
