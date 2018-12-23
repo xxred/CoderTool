@@ -36,13 +36,8 @@ namespace Web码神工具
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggingBuilder loggingBuilder)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //Configuration.GetSection("Logging")
-            loggingBuilder.AddConsole(configure=> {
-            });
-            loggingBuilder.AddDebug();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

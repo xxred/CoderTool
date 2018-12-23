@@ -6,7 +6,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All"/>
+    <PackageReference Include="Microsoft.AspNetCore.All" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="2.2.0" />
     <PackageReference Include="MySql.Data" Version="8.0.13" />
     <PackageReference Include="NewLife.Core" Version="7.4.6911.41889" />
@@ -33,6 +33,7 @@
     <None Remove="Template\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Controllers\EngineController.cs" />
     <Compile Remove="Engine\IcoHelper.cs" />
     <Compile Remove="Engine\UIConfig.cs" />
     <Compile Remove="Engine\XCoderBase.cs" />
@@ -43,7 +44,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Template\实体数据\中文名.cs.cshtml" />
+    <Content Include="Template\实体数据\中文名.cs.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Output\" />
   </ItemGroup>
   <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
