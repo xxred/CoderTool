@@ -3,6 +3,7 @@
 @{
     var Config = ViewBag.Config as ModelConfig;
     var Table = ViewBag.Table as IDataTable;
+    var Tables = ViewBag.Tables as List<IDataTable>;
 }
 using System;
 using System.Collections.Generic;
@@ -53,302 +54,41 @@ namespace @Config.NameSpace
     public partial class @Table.Name@(Config.RenderGenEntity ? "<TEntity> : I"+ Table.Name : " : I"+ Table.Name)
     {
         #region 属性
-        private Int32 _ID;
-        /// <summary>用户ID</summary>
-        [DisplayName("用户ID")]
-        [Description("用户ID")]
-        [DataObjectField(true, true, false, 10)]
-        [BindColumn("ID", "用户ID", "int(11)")]
-        public virtual Int32 ID
+@foreach (IDataColumn Field in Table.Columns)
+{
+    String des = Field.Description;
+    if (!String.IsNullOrEmpty(des))
         {
-            get { return _ID; }
-            set { if (OnPropertyChanging(__.ID, value)) { _ID = value; OnPropertyChanged(__.ID); } }
+            des = des.Replace("\r\n", " ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
+        }
+    String dis = Field.DisplayName;
+    if (!String.IsNullOrEmpty(dis))
+        {
+            dis = dis.Replace("\r\n", " ").Replace("'", " ").Replace("\"", "");
         }
 
-        private String _LoginName;
-        /// <summary>登录账号</summary>
-        [DisplayName("登录账号")]
-        [Description("登录账号")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("LoginName", "登录账号", "VARCHAR(50)")]
-        public virtual String LoginName
+    <text>        private @Field.DataType.Name _@Field.ColumnName;
+        /// <summary>@des</summary>
+        [DisplayName("@dis")]
+        [Description("@des")]
+        [DataObjectField(@Field.PrimaryKey.ToString().ToLower(), @Field.Identity.ToString().ToLower(), @Field.Nullable.ToString().ToLower(), @Field.Length)]
+        [BindColumn("@Field.ColumnName", "@des", "@Field.RawType"@(Field.Master ? ", Master = " + Field.Master.ToString().ToLower() : ""))]
+        public virtual @(Field.DataType == null ? "" : Field.DataType.Name) @Field.ColumnName
         {
-            get { return _LoginName; }
-            set { if (OnPropertyChanging(__.LoginName, value)) { _LoginName = value; OnPropertyChanged(__.LoginName); } }
+            get { return _@Field.ColumnName; }
+            set { if (OnPropertyChanging(__.@Field.ColumnName, value)) { _@Field.ColumnName = value; OnPropertyChanged(__.@Field.ColumnName); } }
         }
 
-        private String _PassWord;
-        /// <summary>登录密码</summary>
-        [DisplayName("登录密码")]
-        [Description("登录密码")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("PassWord", "登录密码", "VARCHAR(50)")]
-        public virtual String PassWord
-        {
-            get { return _PassWord; }
-            set { if (OnPropertyChanging(__.PassWord, value)) { _PassWord = value; OnPropertyChanged(__.PassWord); } }
-        }
-
-        private String _RealName;
-        /// <summary>真实姓名</summary>
-        [DisplayName("真实姓名")]
-        [Description("真实姓名")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("RealName", "真实姓名", "VARCHAR(50)")]
-        public virtual String RealName
-        {
-            get { return _RealName; }
-            set { if (OnPropertyChanging(__.RealName, value)) { _RealName = value; OnPropertyChanged(__.RealName); } }
-        }
-
-        private String _Email;
-        /// <summary>电子邮件</summary>
-        [DisplayName("电子邮件")]
-        [Description("电子邮件")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("Email", "电子邮件", "VARCHAR(50)")]
-        public virtual String Email
-        {
-            get { return _Email; }
-            set { if (OnPropertyChanging(__.Email, value)) { _Email = value; OnPropertyChanged(__.Email); } }
-        }
-
-        private Int32 _Sex;
-        /// <summary>性别（0男1女）</summary>
-        [DisplayName("性别")]
-        [Description("性别（0男1女）")]
-        [DataObjectField(false, false, false, 10)]
-        [BindColumn("Sex", "性别（0男1女）", "int(11)")]
-        public virtual Int32 Sex
-        {
-            get { return _Sex; }
-            set { if (OnPropertyChanging(__.Sex, value)) { _Sex = value; OnPropertyChanged(__.Sex); } }
-        }
-
-        private String _PhoneNumber;
-        /// <summary>手机号码</summary>
-        [DisplayName("手机号码")]
-        [Description("手机号码")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("PhoneNumber", "手机号码", "VARCHAR(50)")]
-        public virtual String PhoneNumber
-        {
-            get { return _PhoneNumber; }
-            set { if (OnPropertyChanging(__.PhoneNumber, value)) { _PhoneNumber = value; OnPropertyChanged(__.PhoneNumber); } }
-        }
-
-        private Int32 _LoginCount;
-        /// <summary>登录次数</summary>
-        [DisplayName("登录次数")]
-        [Description("登录次数")]
-        [DataObjectField(false, false, false, 10)]
-        [BindColumn("LoginCount", "登录次数", "int(11)")]
-        public virtual Int32 LoginCount
-        {
-            get { return _LoginCount; }
-            set { if (OnPropertyChanging(__.LoginCount, value)) { _LoginCount = value; OnPropertyChanged(__.LoginCount); } }
-        }
-
-        private DateTime _LastLoginTime;
-        /// <summary>最后登录时间</summary>
-        [DisplayName("最后登录时间")]
-        [Description("最后登录时间")]
-        [DataObjectField(false, false, true, 0)]
-        [BindColumn("LastLoginTime", "最后登录时间", "datetime")]
-        public virtual DateTime LastLoginTime
-        {
-            get { return _LastLoginTime; }
-            set { if (OnPropertyChanging(__.LastLoginTime, value)) { _LastLoginTime = value; OnPropertyChanged(__.LastLoginTime); } }
-        }
-
-        private String _LastLoginIP;
-        /// <summary>最后登录IP</summary>
-        [DisplayName("最后登录IP")]
-        [Description("最后登录IP")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("LastLoginIP", "最后登录IP", "VARCHAR(50)")]
-        public virtual String LastLoginIP
-        {
-            get { return _LastLoginIP; }
-            set { if (OnPropertyChanging(__.LastLoginIP, value)) { _LastLoginIP = value; OnPropertyChanged(__.LastLoginIP); } }
-        }
-
-        private Boolean _IsSuperAdmin;
-        /// <summary>是否超级管理员</summary>
-        [DisplayName("是否超级管理员")]
-        [Description("是否超级管理员")]
-        [DataObjectField(false, false, false, 1)]
-        [BindColumn("IsSuperAdmin", "是否超级管理员", "enum('N','Y')")]
-        public virtual Boolean IsSuperAdmin
-        {
-            get { return _IsSuperAdmin; }
-            set { if (OnPropertyChanging(__.IsSuperAdmin, value)) { _IsSuperAdmin = value; OnPropertyChanged(__.IsSuperAdmin); } }
-        }
-
-        private Boolean _IsLockScreen;
-        /// <summary>是否锁屏</summary>
-        [DisplayName("是否锁屏")]
-        [Description("是否锁屏")]
-        [DataObjectField(false, false, false, 1)]
-        [BindColumn("IsLockScreen", "是否锁屏", "enum('N','Y')")]
-        public virtual Boolean IsLockScreen
-        {
-            get { return _IsLockScreen; }
-            set { if (OnPropertyChanging(__.IsLockScreen, value)) { _IsLockScreen = value; OnPropertyChanged(__.IsLockScreen); } }
-        }
-
-        private String _SkinName;
-        /// <summary>皮肤名称</summary>
-        [DisplayName("皮肤名称")]
-        [Description("皮肤名称")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("SkinName", "皮肤名称", "VARCHAR(50)")]
-        public virtual String SkinName
-        {
-            get { return _SkinName; }
-            set { if (OnPropertyChanging(__.SkinName, value)) { _SkinName = value; OnPropertyChanged(__.SkinName); } }
-        }
-
-        private String _ThemeColor;
-        /// <summary>主题颜色</summary>
-        [DisplayName("主题颜色")]
-        [Description("主题颜色")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("ThemeColor", "主题颜色", "VARCHAR(50)")]
-        public virtual String ThemeColor
-        {
-            get { return _ThemeColor; }
-            set { if (OnPropertyChanging(__.ThemeColor, value)) { _ThemeColor = value; OnPropertyChanged(__.ThemeColor); } }
-        }
-
-        private String _RegPassword;
-        /// <summary>注册密码</summary>
-        [DisplayName("注册密码")]
-        [Description("注册密码")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("RegPassword", "注册密码", "VARCHAR(50)")]
-        public virtual String RegPassword
-        {
-            get { return _RegPassword; }
-            set { if (OnPropertyChanging(__.RegPassword, value)) { _RegPassword = value; OnPropertyChanged(__.RegPassword); } }
-        }
-
-        private Boolean _IsDelete;
-        /// <summary>是否删除</summary>
-        [DisplayName("是否删除")]
-        [Description("是否删除")]
-        [DataObjectField(false, false, false, 1)]
-        [BindColumn("IsDelete", "是否删除", "enum('N','Y')")]
-        public virtual Boolean IsDelete
-        {
-            get { return _IsDelete; }
-            set { if (OnPropertyChanging(__.IsDelete, value)) { _IsDelete = value; OnPropertyChanged(__.IsDelete); } }
-        }
-
-        private Boolean _IsLock;
-        /// <summary>是否锁定</summary>
-        [DisplayName("是否锁定")]
-        [Description("是否锁定")]
-        [DataObjectField(false, false, false, 1)]
-        [BindColumn("IsLock", "是否锁定", "enum('N','Y')")]
-        public virtual Boolean IsLock
-        {
-            get { return _IsLock; }
-            set { if (OnPropertyChanging(__.IsLock, value)) { _IsLock = value; OnPropertyChanged(__.IsLock); } }
-        }
-
-        private String _AddUser;
-        /// <summary>添加人</summary>
-        [DisplayName("添加人")]
-        [Description("添加人")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("AddUser", "添加人", "VARCHAR(50)")]
-        public virtual String AddUser
-        {
-            get { return _AddUser; }
-            set { if (OnPropertyChanging(__.AddUser, value)) { _AddUser = value; OnPropertyChanged(__.AddUser); } }
-        }
-
-        private DateTime _AddDate;
-        /// <summary>添加时间</summary>
-        [DisplayName("添加时间")]
-        [Description("添加时间")]
-        [DataObjectField(false, false, true, 0)]
-        [BindColumn("AddDate", "添加时间", "datetime")]
-        public virtual DateTime AddDate
-        {
-            get { return _AddDate; }
-            set { if (OnPropertyChanging(__.AddDate, value)) { _AddDate = value; OnPropertyChanged(__.AddDate); } }
-        }
-
-        private String _EditUser;
-        /// <summary>修改人</summary>
-        [DisplayName("修改人")]
-        [Description("修改人")]
-        [DataObjectField(false, false, true, 50)]
-        [BindColumn("EditUser", "修改人", "VARCHAR(50)")]
-        public virtual String EditUser
-        {
-            get { return _EditUser; }
-            set { if (OnPropertyChanging(__.EditUser, value)) { _EditUser = value; OnPropertyChanged(__.EditUser); } }
-        }
-
-        private DateTime _EditDate;
-        /// <summary>修改时间</summary>
-        [DisplayName("修改时间")]
-        [Description("修改时间")]
-        [DataObjectField(false, false, true, 0)]
-        [BindColumn("EditDate", "修改时间", "datetime")]
-        public virtual DateTime EditDate
-        {
-            get { return _EditDate; }
-            set { if (OnPropertyChanging(__.EditDate, value)) { _EditDate = value; OnPropertyChanged(__.EditDate); } }
-        }
-
-        private Int32 _AdminType;
-        /// <summary>用户类型</summary>
-        [DisplayName("用户类型")]
-        [Description("用户类型")]
-        [DataObjectField(false, false, false, 10)]
-        [BindColumn("AdminType", "用户类型", "int(11)")]
-        public virtual Int32 AdminType
-        {
-            get { return _AdminType; }
-            set { if (OnPropertyChanging(__.AdminType, value)) { _AdminType = value; OnPropertyChanged(__.AdminType); } }
-        }
-
-        private Int32 _BMGLID;
-        /// <summary>部门单位ID</summary>
-        [DisplayName("部门单位ID")]
-        [Description("部门单位ID")]
-        [DataObjectField(false, false, false, 10)]
-        [BindColumn("BMGLID", "部门单位ID", "int(11)")]
-        public virtual Int32 BMGLID
-        {
-            get { return _BMGLID; }
-            set { if (OnPropertyChanging(__.BMGLID, value)) { _BMGLID = value; OnPropertyChanged(__.BMGLID); } }
-        }
-
-        private Int32 _GRXXID;
-        /// <summary>个人信息ID</summary>
-        [DisplayName("个人信息ID")]
-        [Description("个人信息ID")]
-        [DataObjectField(false, false, false, 10)]
-        [BindColumn("GRXXID", "个人信息ID", "int(11)")]
-        public virtual Int32 GRXXID
-        {
-            get { return _GRXXID; }
-            set { if (OnPropertyChanging(__.GRXXID, value)) { _GRXXID = value; OnPropertyChanged(__.GRXXID); } }
-        }
+</text>
+}Field.ColumnName
         #endregion
 
         #region 获取/设置 字段值
         /// <summary>
-    /// 获取/设置 字段值。
-    /// 一个索引，基类使用反射实现。
-    /// 派生实体类可重写该索引，以避免反射带来的性能损耗
-    ///
-</summary>
+        /// 获取/设置 字段值。
+        /// 一个索引，基类使用反射实现。
+        /// 派生实体类可重写该索引，以避免反射带来的性能损耗
+        /// </summary>
         /// <param name="name">字段名</param>
         /// <returns></returns>
         public override Object this[String name]
@@ -357,30 +97,11 @@ namespace @Config.NameSpace
             {
                 switch (name)
                 {
-                    case __.ID : return _ID;
-                    case __.LoginName : return _LoginName;
-                    case __.PassWord : return _PassWord;
-                    case __.RealName : return _RealName;
-                    case __.Email : return _Email;
-                    case __.Sex : return _Sex;
-                    case __.PhoneNumber : return _PhoneNumber;
-                    case __.LoginCount : return _LoginCount;
-                    case __.LastLoginTime : return _LastLoginTime;
-                    case __.LastLoginIP : return _LastLoginIP;
-                    case __.IsSuperAdmin : return _IsSuperAdmin;
-                    case __.IsLockScreen : return _IsLockScreen;
-                    case __.SkinName : return _SkinName;
-                    case __.ThemeColor : return _ThemeColor;
-                    case __.RegPassword : return _RegPassword;
-                    case __.IsDelete : return _IsDelete;
-                    case __.IsLock : return _IsLock;
-                    case __.AddUser : return _AddUser;
-                    case __.AddDate : return _AddDate;
-                    case __.EditUser : return _EditUser;
-                    case __.EditDate : return _EditDate;
-                    case __.AdminType : return _AdminType;
-                    case __.BMGLID : return _BMGLID;
-                    case __.GRXXID : return _GRXXID;
+@foreach(IDataColumn Field in Table.Columns)
+{
+    <text>                    case __.@(Field.ColumnName) : return _@(Field.ColumnName);
+</text>                    
+}
                     default: return base[name];
                 }
             }
@@ -388,30 +109,22 @@ namespace @Config.NameSpace
             {
                 switch (name)
                 {
-                    case __.ID : _ID = Convert.ToInt32(value); break;
-                    case __.LoginName : _LoginName = Convert.ToString(value); break;
-                    case __.PassWord : _PassWord = Convert.ToString(value); break;
-                    case __.RealName : _RealName = Convert.ToString(value); break;
-                    case __.Email : _Email = Convert.ToString(value); break;
-                    case __.Sex : _Sex = Convert.ToInt32(value); break;
-                    case __.PhoneNumber : _PhoneNumber = Convert.ToString(value); break;
-                    case __.LoginCount : _LoginCount = Convert.ToInt32(value); break;
-                    case __.LastLoginTime : _LastLoginTime = Convert.ToDateTime(value); break;
-                    case __.LastLoginIP : _LastLoginIP = Convert.ToString(value); break;
-                    case __.IsSuperAdmin : _IsSuperAdmin = Convert.ToBoolean(value); break;
-                    case __.IsLockScreen : _IsLockScreen = Convert.ToBoolean(value); break;
-                    case __.SkinName : _SkinName = Convert.ToString(value); break;
-                    case __.ThemeColor : _ThemeColor = Convert.ToString(value); break;
-                    case __.RegPassword : _RegPassword = Convert.ToString(value); break;
-                    case __.IsDelete : _IsDelete = Convert.ToBoolean(value); break;
-                    case __.IsLock : _IsLock = Convert.ToBoolean(value); break;
-                    case __.AddUser : _AddUser = Convert.ToString(value); break;
-                    case __.AddDate : _AddDate = Convert.ToDateTime(value); break;
-                    case __.EditUser : _EditUser = Convert.ToString(value); break;
-                    case __.EditDate : _EditDate = Convert.ToDateTime(value); break;
-                    case __.AdminType : _AdminType = Convert.ToInt32(value); break;
-                    case __.BMGLID : _BMGLID = Convert.ToInt32(value); break;
-                    case __.GRXXID : _GRXXID = Convert.ToInt32(value); break;
+@{
+    Type conv=typeof(Convert);
+    foreach(IDataColumn Field in Table.Columns)
+    {
+        if(conv.GetMethod("To"+Field.DataType.Name, new Type[]{typeof(Object)})!=null)
+        {
+            <text>                    case __.@(Field.ColumnName) : _@(Field.ColumnName) = Convert.To@(Field.DataType.Name)(value); break;
+</text>
+        }
+        else
+        {
+            <text>                    case __.@(Field.ColumnName) : _@(Field.ColumnName) = (@(Field.DataType.Name))value; break;
+</text>
+        }
+    }
+}
                     default: base[name] = value; break;
                 }
             }
@@ -422,236 +135,59 @@ namespace @Config.NameSpace
         /// <summary>取得用户管理字段信息的快捷方式</summary>
         public partial class _
         {
-            ///<summary>用户ID</summary>
-            public static readonly Field ID = FindByName(__.ID);
-
-            ///<summary>登录账号</summary>
-            public static readonly Field LoginName = FindByName(__.LoginName);
-
-            ///<summary>登录密码</summary>
-            public static readonly Field PassWord = FindByName(__.PassWord);
-
-            ///<summary>真实姓名</summary>
-            public static readonly Field RealName = FindByName(__.RealName);
-
-            ///<summary>电子邮件</summary>
-            public static readonly Field Email = FindByName(__.Email);
-
-            ///<summary>性别（0男1女）</summary>
-            public static readonly Field Sex = FindByName(__.Sex);
-
-            ///<summary>手机号码</summary>
-            public static readonly Field PhoneNumber = FindByName(__.PhoneNumber);
-
-            ///<summary>登录次数</summary>
-            public static readonly Field LoginCount = FindByName(__.LoginCount);
-
-            ///<summary>最后登录时间</summary>
-            public static readonly Field LastLoginTime = FindByName(__.LastLoginTime);
-
-            ///<summary>最后登录IP</summary>
-            public static readonly Field LastLoginIP = FindByName(__.LastLoginIP);
-
-            ///<summary>是否超级管理员</summary>
-            public static readonly Field IsSuperAdmin = FindByName(__.IsSuperAdmin);
-
-            ///<summary>是否锁屏</summary>
-            public static readonly Field IsLockScreen = FindByName(__.IsLockScreen);
-
-            ///<summary>皮肤名称</summary>
-            public static readonly Field SkinName = FindByName(__.SkinName);
-
-            ///<summary>主题颜色</summary>
-            public static readonly Field ThemeColor = FindByName(__.ThemeColor);
-
-            ///<summary>注册密码</summary>
-            public static readonly Field RegPassword = FindByName(__.RegPassword);
-
-            ///<summary>是否删除</summary>
-            public static readonly Field IsDelete = FindByName(__.IsDelete);
-
-            ///<summary>是否锁定</summary>
-            public static readonly Field IsLock = FindByName(__.IsLock);
-
-            ///<summary>添加人</summary>
-            public static readonly Field AddUser = FindByName(__.AddUser);
-
-            ///<summary>添加时间</summary>
-            public static readonly Field AddDate = FindByName(__.AddDate);
-
-            ///<summary>修改人</summary>
-            public static readonly Field EditUser = FindByName(__.EditUser);
-
-            ///<summary>修改时间</summary>
-            public static readonly Field EditDate = FindByName(__.EditDate);
-
-            ///<summary>用户类型</summary>
-            public static readonly Field AdminType = FindByName(__.AdminType);
-
-            ///<summary>部门单位ID</summary>
-            public static readonly Field BMGLID = FindByName(__.BMGLID);
-
-            ///<summary>个人信息ID</summary>
-            public static readonly Field GRXXID = FindByName(__.GRXXID);
+@foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+{
+    String des=Field.Description;
+    if (!String.IsNullOrEmpty(des))
+    {
+        des = des.Replace("\r\n", " ");
+    }
+    <text>            ///<summary>@(des)</summary>
+            public static readonly Field @(Field.ColumnName) = FindByName(__.@(Field.ColumnName));
+</text>
+}
 
             static Field FindByName(String name) { return Meta.Table.FindByName(name); }
         }
 
-        /// <summary>取得用户管理字段名称的快捷方式</summary>
+        /// <summary>取得@(tdis)字段名称的快捷方式</summary>
         partial class __
         {
-            ///<summary>用户ID</summary>
-            public const String ID = "ID";
-
-            ///<summary>登录账号</summary>
-            public const String LoginName = "LoginName";
-
-            ///<summary>登录密码</summary>
-            public const String PassWord = "PassWord";
-
-            ///<summary>真实姓名</summary>
-            public const String RealName = "RealName";
-
-            ///<summary>电子邮件</summary>
-            public const String Email = "Email";
-
-            ///<summary>性别（0男1女）</summary>
-            public const String Sex = "Sex";
-
-            ///<summary>手机号码</summary>
-            public const String PhoneNumber = "PhoneNumber";
-
-            ///<summary>登录次数</summary>
-            public const String LoginCount = "LoginCount";
-
-            ///<summary>最后登录时间</summary>
-            public const String LastLoginTime = "LastLoginTime";
-
-            ///<summary>最后登录IP</summary>
-            public const String LastLoginIP = "LastLoginIP";
-
-            ///<summary>是否超级管理员</summary>
-            public const String IsSuperAdmin = "IsSuperAdmin";
-
-            ///<summary>是否锁屏</summary>
-            public const String IsLockScreen = "IsLockScreen";
-
-            ///<summary>皮肤名称</summary>
-            public const String SkinName = "SkinName";
-
-            ///<summary>主题颜色</summary>
-            public const String ThemeColor = "ThemeColor";
-
-            ///<summary>注册密码</summary>
-            public const String RegPassword = "RegPassword";
-
-            ///<summary>是否删除</summary>
-            public const String IsDelete = "IsDelete";
-
-            ///<summary>是否锁定</summary>
-            public const String IsLock = "IsLock";
-
-            ///<summary>添加人</summary>
-            public const String AddUser = "AddUser";
-
-            ///<summary>添加时间</summary>
-            public const String AddDate = "AddDate";
-
-            ///<summary>修改人</summary>
-            public const String EditUser = "EditUser";
-
-            ///<summary>修改时间</summary>
-            public const String EditDate = "EditDate";
-
-            ///<summary>用户类型</summary>
-            public const String AdminType = "AdminType";
-
-            ///<summary>部门单位ID</summary>
-            public const String BMGLID = "BMGLID";
-
-            ///<summary>个人信息ID</summary>
-            public const String GRXXID = "GRXXID";
-
+@foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+{
+    String des=Field.Description;
+    if(!String.IsNullOrEmpty(des))
+    {
+        des=des.Replace("\r\n"," ");
+    }
+    <text>            ///<summary>@(des)</summary>
+            public const String @(Field.ColumnName) = "@(Field.ColumnName)";
+</text>
+}
         }
         #endregion
     }
 
-    /// <summary>用户管理接口</summary>
-    public partial interface IGxuSysusers
+    /// <summary>@(tdis)接口</summary>
+@if (tdis != tdes)
+{
+    <text>    /// <remarks>@(tdes)</remarks></text>
+}
+    public partial interface I@(Table.Name)@(!String.IsNullOrEmpty(Table.BaseType) ? " : I" + Table.BaseType : "")
     {
         #region 属性
-        /// <summary>用户ID</summary>
-        Int32 ID { get; set; }
-
-        /// <summary>登录账号</summary>
-        String LoginName { get; set; }
-
-        /// <summary>登录密码</summary>
-        String PassWord { get; set; }
-
-        /// <summary>真实姓名</summary>
-        String RealName { get; set; }
-
-        /// <summary>电子邮件</summary>
-        String Email { get; set; }
-
-        /// <summary>性别（0男1女）</summary>
-        Int32 Sex { get; set; }
-
-        /// <summary>手机号码</summary>
-        String PhoneNumber { get; set; }
-
-        /// <summary>登录次数</summary>
-        Int32 LoginCount { get; set; }
-
-        /// <summary>最后登录时间</summary>
-        DateTime LastLoginTime { get; set; }
-
-        /// <summary>最后登录IP</summary>
-        String LastLoginIP { get; set; }
-
-        /// <summary>是否超级管理员</summary>
-        Boolean IsSuperAdmin { get; set; }
-
-        /// <summary>是否锁屏</summary>
-        Boolean IsLockScreen { get; set; }
-
-        /// <summary>皮肤名称</summary>
-        String SkinName { get; set; }
-
-        /// <summary>主题颜色</summary>
-        String ThemeColor { get; set; }
-
-        /// <summary>注册密码</summary>
-        String RegPassword { get; set; }
-
-        /// <summary>是否删除</summary>
-        Boolean IsDelete { get; set; }
-
-        /// <summary>是否锁定</summary>
-        Boolean IsLock { get; set; }
-
-        /// <summary>添加人</summary>
-        String AddUser { get; set; }
-
-        /// <summary>添加时间</summary>
-        DateTime AddDate { get; set; }
-
-        /// <summary>修改人</summary>
-        String EditUser { get; set; }
-
-        /// <summary>修改时间</summary>
-        DateTime EditDate { get; set; }
-
-        /// <summary>用户类型</summary>
-        Int32 AdminType { get; set; }
-
-        /// <summary>部门单位ID</summary>
-        Int32 BMGLID { get; set; }
-
-        /// <summary>个人信息ID</summary>
-        Int32 GRXXID { get; set; }
-        #endregion
+@foreach(IDataColumn Field in Table.Columns)
+{
+    String des=Field.Description;
+    if (!String.IsNullOrEmpty(des))
+    {
+        des = des.Replace("\r\n", " ");
+    }
+            <text>        ///<summary>@(des)</summary>
+            @(Field.DataType==null?"":Field.DataType.Name) @(Field.ColumnName) { get; set; }
+</text>
+    }
+        #endregion     
 
         #region 获取/设置 字段值
         /// <summary>获取/设置 字段值。</summary>
