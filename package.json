@@ -9,9 +9,10 @@
   },
   "dependencies": {
     "axios": "^0.15.3",
-    "core-js": "^2.4.1",
+    "core-js": "^2.6.1",
     "font-awesome": "^4.6.3",
-    "iview": "^2.14.3",
+    "iview": "^3.2.2",
+    "monaco-editor": "^0.15.6",
     "vue": "^2.1.8",
     "vue-router": "^2.1.1",
     "vue-server-renderer": "^2.1.8",

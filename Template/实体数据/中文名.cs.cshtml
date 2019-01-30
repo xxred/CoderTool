@@ -100,7 +100,7 @@ namespace @Config.NameSpace
 @foreach(IDataColumn Field in Table.Columns)
 {
     <text>                    case __.@(Field.ColumnName) : return _@(Field.ColumnName);
-</text>                    
+</text>
 }
                     default: return base[name];
                 }
@@ -187,7 +187,7 @@ namespace @Config.NameSpace
             @(Field.DataType==null?"":Field.DataType.Name) @(Field.ColumnName) { get; set; }
 </text>
     }
-        #endregion     
+        #endregion
 
         #region 获取/设置 字段值
         /// <summary>获取/设置 字段值。</summary>
